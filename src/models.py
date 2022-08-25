@@ -31,15 +31,15 @@ class User(Base):
 class Character(Base):
     __tablename__ = 'characters'
     id = Column(Integer, primary_key=True)
-    name = Column(String(30))
+    name = Column(String(30), nullable=False)
     gender = Column(String(20), nullable=False)
     birth_date = Column(String(10), nullable=False)
     height = Column(Integer, nullable=False)
     hair_color = Column(String(50), nullable=False)
     eye_color = Column(String(50), nullable=False)
     skin_color = Column(String(50), nullable=False)
-    url_image = Column(String(200), unique=True, nullable = False, )
-    description = Column(String(1000), unique=True, nullable = False)
+    url_image = Column(String(200), unique=True, nullable=False, )
+    description = Column(String(1000), unique=True, nullable=False)
 
     planet_id = Column(Integer, ForeignKey('planets.id'))
     planet = relationship('Planet', back_populates='character')
@@ -48,34 +48,35 @@ class Character(Base):
     vehicles = relationship('Vehicle', back_populates='character')
     starship = relationship('Starship', back_populates='starship')
 
-    
+
 class Planet(Base):
     __tablename__ = 'planets'
     id = Column(Integer, primary_key=True)
-    name = Column(String(30))
-    population = Column(Integer, nullable = False)
-    terrain = Column(String(50), nullable = False)
-    climate = Column(String(50), nullable = False)
-    orbit_period = Column(Integer, nullable = False)
-    orbit_rotation = Column(Integer, nullable = False)
-    diameter = Column(Integer, nullable = False)
-    url_image = Column(String(200), unique = True, nullable = False)
-    description = Column(String(1000), unique = True, nullable = False)
+    name = Column(String(30), nullable=False)
+    population = Column(Integer, nullable=False)
+    terrain = Column(String(50), nullable=False)
+    climate = Column(String(50), nullable=False)
+    orbit_period = Column(Integer, nullable=False)
+    orbit_rotation = Column(Integer, nullable=False)
+    diameter = Column(Integer, nullable=False)
+    url_image = Column(String(200), unique=True, nullable=False)
+    description = Column(String(1000), unique=True, nullable=False)
 
     favorite = relationship('Favorite', back_populates='planet')
     character = relationship('Character', back_populates='planet')
 
+
 class Vehicle(Base):
     __tablename__ = 'vehicles'
     id = Column(Integer, primary_key=True)
-    name = Column(String(30))
-    model = Column(String(100), nullable = False)
-    vehicle_class = Column(String(100), unique = True, nullable = False)
-    passengers = Column(Integer, nullable = False)
-    max_speed = Column(Integer, nullable = False)
-    consumables = Column(Integer, nullable = False)
-    url_image = Column(String(200), unique = True, nullable = False)
-    description = Column(String(1000), unique = True, nullable = False)
+    name = Column(String(30), nullable=False)
+    model = Column(String(100), nullable=False)
+    vehicle_class = Column(String(100), unique=True)
+    passengers = Column(Integer)
+    max_speed = Column(Integer)
+    consumables = Column(Integer)
+    url_image = Column(String(200), unique=True)
+    description = Column(String(1000), unique=True)
 
     character_id = Column(Integer, ForeignKey('characters.id'))
     character = relationship('Character', back_populates='vechicle')
@@ -86,7 +87,15 @@ class Vehicle(Base):
 class Starship(Base):
     __tablename__ = 'starships'
     id = Column(Integer, primary_key=True)
-    name = Column(String(30))
+    name = Column(String(30), unique=True, nullable=False)
+    model = Column(Integer)
+    manufacturer = Column(String(120))
+    length = Column(Integer)
+    crew = Column(Integer)
+    passengers = Column(Integer)
+    cargo_capacity = Column(Integer)
+    created = Column(String(70))
+    consumables = Column(Integer)
 
     character_id = Column(Integer, ForeignKey('characters.id'))
     character = relationship('Character', back_populates='starship')
@@ -110,11 +119,12 @@ class Favorite(Base):
     vehicle_id = Column(Integer, ForeignKey('vehicles.id'))
     vehicle = relationship('Vehicle', back_populates='favorite')
 
-    starship_id = Column(Integer, ForeignKey('starships.id'))    
+    starship_id = Column(Integer, ForeignKey('starships.id'))
     starship = relationship('Starship', back_populates='favorite')
 
     def to_dict(self):
         return {}
 
-## Draw from SQLAlchemy base
+
+# Draw from SQLAlchemy base
 render_er(Base, 'diagram.png')
